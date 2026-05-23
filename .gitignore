@@ -2,4 +2,5 @@
 __pycache__/
 *.pyc
 runs/
+runs_*
 .DS_Store
