@@ -1,0 +1,4 @@
+PONG (Atari)
+- change reward/penalty system
+- increase training steps
+

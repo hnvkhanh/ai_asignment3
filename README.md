@@ -31,6 +31,37 @@ Start with Pong because it is a common sanity-check Atari task:
 python -m atari_agent.train_dqn --env-id ALE/Pong-v5 --total-timesteps 100000
 ```
 
+Use CUDA explicitly when you have an NVIDIA GPU and a CUDA-enabled PyTorch
+install:
+
+```bash
+python -m atari_agent.train_dqn --env-id ALE/Pong-v5 --total-timesteps 100000 --device cuda
+```
+
+For newer NVIDIA GPUs, `--amp` can make the neural-network updates faster:
+
+```bash
+python -m atari_agent.train_dqn --env-id ALE/Pong-v5 --total-timesteps 100000 --device cuda --amp
+```
+
+Pong training uses custom reward shaping by default:
+
+- `+1` when the agent hits the ball
+- `-2` when the agent misses the ball
+- `+2` when the agent scores a point
+
+You can adjust those values:
+
+```bash
+python -m atari_agent.train_dqn --env-id ALE/Pong-v5 --hit-reward 1 --miss-penalty -2 --score-reward 2
+```
+
+To use the original clipped Atari rewards instead:
+
+```bash
+python -m atari_agent.train_dqn --env-id ALE/Pong-v5 --no-pong-reward-shaping
+```
+
 Useful options:
 
 ```bash

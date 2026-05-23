@@ -1,4 +1,4 @@
-gymnasium[atari,accept-rom-license]>=1.1.1
+gymnasium[atari,accept-rom-license,box2d]>=1.1.1
 ale-py>=0.11.0
 autorom[accept-rom-license]>=0.6.1
 numpy>=1.24
