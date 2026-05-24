@@ -51,24 +51,20 @@ def register_ale() -> None:
 
 
 class BreakoutRewardShaping(gym.Wrapper):
-    """Adds dense Breakout rewards for brick hits, paddle hits, and misses."""
+    """Adds dense Breakout rewards for brick hits and paddle hits."""
 
     def __init__(
         self,
         env: gym.Env,
         brick_reward: float = 2.0,
         paddle_hit_reward: float = 1.0,
-        life_loss_penalty: float = -20.0,
-        miss_distance_penalty: float = -2.0,
-        middle_position_penalty: float = 0.5,
+        miss_distance_penalty: float = -1.0,
         min_paddle_hit_interval: int = 6,
     ):
         super().__init__(env)
         self.brick_reward = brick_reward
         self.paddle_hit_reward = paddle_hit_reward
-        self.life_loss_penalty = life_loss_penalty
-        self.miss_distance_penalty = miss_distance_penalty
-        self.middle_position_penalty = max(0.0, middle_position_penalty)
+        self.miss_distance_penalty = min(0.0, miss_distance_penalty)
         self.min_paddle_hit_interval = min_paddle_hit_interval
         self.raw_step = 0
         self.last_paddle_hit_step = -min_paddle_hit_interval
@@ -102,11 +98,8 @@ class BreakoutRewardShaping(gym.Wrapper):
         raw_reward = float(reward)
         self.raw_episode_return += raw_reward
         shaped_reward = self.brick_reward if raw_reward > 0.0 else 0.0
-        middle_position_penalty = 0.0
         if raw_reward > 0.0:
             self.episode_brick_hits += 1
-            middle_position_penalty = self._middle_position_penalty(observation)
-            shaped_reward += middle_position_penalty
         hit_paddle = self._hit_paddle(observation)
         if hit_paddle:
             self.episode_paddle_hits += 1
@@ -122,7 +115,7 @@ class BreakoutRewardShaping(gym.Wrapper):
         if lost_life:
             self.episode_life_losses += 1
             miss_distance_penalty = self._miss_distance_penalty(observation)
-            shaped_reward += self.life_loss_penalty + miss_distance_penalty
+            shaped_reward += miss_distance_penalty
             self.previous_dy = None
             self.previous_ball = self._find_ball(observation)
 
@@ -136,7 +129,6 @@ class BreakoutRewardShaping(gym.Wrapper):
         info["hit_paddle"] = hit_paddle
         info["lost_life"] = lost_life
         info["miss_distance_penalty"] = miss_distance_penalty
-        info["middle_position_penalty"] = middle_position_penalty
         if terminated or truncated:
             info["raw_episode_return"] = self.raw_episode_return
             info["brick_hits"] = self.episode_brick_hits
@@ -191,19 +183,7 @@ class BreakoutRewardShaping(gym.Wrapper):
         frame = np.asarray(observation)
         max_distance = max(1.0, frame.shape[1] / 2.0)
         distance_fraction = min(abs(ball[0] - paddle[0]) / max_distance, 1.0)
-        max_penalty = min(0.0, self.miss_distance_penalty)
-        return max_penalty * distance_fraction
-
-    def _middle_position_penalty(self, observation: Any) -> float:
-        paddle = self._find_paddle(observation) or self.previous_paddle
-        if paddle is None:
-            return 0.0
-
-        frame = np.asarray(observation)
-        center_x = frame.shape[1] / 2.0
-        max_distance = max(1.0, center_x)
-        distance_fraction = min(abs(paddle[0] - center_x) / max_distance, 1.0)
-        return -self.middle_position_penalty * distance_fraction
+        return self.miss_distance_penalty * distance_fraction
 
     def _foreground_mask(self, observation: Any) -> np.ndarray | None:
         frame = np.asarray(observation)
@@ -310,9 +290,7 @@ def make_env(args: argparse.Namespace, run_dir: Path, eval_mode: bool = False) -
             env,
             brick_reward=args.brick_reward,
             paddle_hit_reward=args.paddle_hit_reward,
-            life_loss_penalty=args.life_loss_penalty,
             miss_distance_penalty=args.miss_distance_penalty,
-            middle_position_penalty=args.middle_position_penalty,
         )
 
     env = AtariPreprocessing(
@@ -467,7 +445,7 @@ def train(args: argparse.Namespace, device: torch.device) -> None:
             "brick_hits",
             "paddle_hits",
             "life_losses",
-            "last_middle_position_penalty",
+            "last_miss_distance_penalty",
             "length",
             "epsilon",
             "loss",
@@ -559,8 +537,8 @@ def train(args: argparse.Namespace, device: torch.device) -> None:
                         "brick_hits": info.get("brick_hits", ""),
                         "paddle_hits": info.get("paddle_hits", ""),
                         "life_losses": info.get("life_losses", ""),
-                        "last_middle_position_penalty": info.get(
-                            "middle_position_penalty",
+                        "last_miss_distance_penalty": info.get(
+                            "miss_distance_penalty",
                             "",
                         ),
                         "length": episode_length,
@@ -642,9 +620,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--no-reward-shaping", dest="reward_shaping", action="store_false")
     parser.add_argument("--brick-reward", type=float, default=2.0)
     parser.add_argument("--paddle-hit-reward", type=float, default=1.0)
-    parser.add_argument("--life-loss-penalty", type=float, default=-20.0)
-    parser.add_argument("--miss-distance-penalty", type=float, default=-2.0)
-    parser.add_argument("--middle-position-penalty", type=float, default=0.5)
+    parser.add_argument("--miss-distance-penalty", type=float, default=-1.0)
     parser.set_defaults(reward_shaping=True)
 
     parser.add_argument("--capture-video", action="store_true")
