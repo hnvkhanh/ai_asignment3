@@ -4,3 +4,4 @@ autorom[accept-rom-license]>=0.6.1
 numpy>=1.24
 opencv-python>=4.8
 torch>=2.2
+matplotlib>=3.7
