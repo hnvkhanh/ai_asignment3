@@ -699,7 +699,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--env-id", default="ALE/Pong-v5")
     parser.add_argument("--total-timesteps", type=int, default=100_000)
     parser.add_argument("--learning-starts", type=int, default=5_000)
-    parser.add_argument("--buffer-size", type=int, default=10_000)
+    parser.add_argument("--buffer-size", type=int, default=20_000)
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--gamma", type=float, default=0.99)
     parser.add_argument("--learning-rate", type=float, default=1e-4)
