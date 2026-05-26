@@ -1,0 +1,11 @@
+agent,training_step,run_id,checkpoint,continuation_buffer_size,episodes,eval_epsilon,mean_score,std_score,min_score,max_score
+Baseline,100000,20260523_190129,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260523_190129\dqn_step_100000.pt,20000,10,0.0,-20.4,0.4898979485566356,-21.0,-20.0
+Baseline,300000,20260523_194710,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260523_194710\dqn_step_300000.pt,20000,10,0.0,-20.2,0.9797958971132712,-21.0,-18.0
+Baseline,600000,20260523_200019,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260523_200019\dqn_step_600000.pt,20000,10,0.0,-15.9,1.8681541692269406,-20.0,-13.0
+Baseline,1200000,20260524_235107,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260524_235107\dqn_step_1200000.pt,20000,10,0.0,-5.2,5.3814496188294845,-11.0,5.0
+Baseline,1800000,20260525_103102,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260525_103102\dqn_step_1800000.pt,20000,10,0.0,10.6,3.746998799039039,4.0,18.0
+Heuristic shaped-reward,100000,20260523_183218,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260523_183218\dqn_step_100000.pt,20000,10,0.0,-20.6,0.4898979485566356,-21.0,-20.0
+Heuristic shaped-reward,300000,20260523_194627,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260523_194627\dqn_step_300000.pt,20000,10,0.0,-18.7,2.238302928559939,-21.0,-15.0
+Heuristic shaped-reward,600000,20260523_201055,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260523_201055\dqn_step_600000.pt,20000,10,0.0,-10.3,3.4942810419312296,-18.0,-4.0
+Heuristic shaped-reward,1200000,20260524_191843,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260524_191843\dqn_step_1200000.pt,20000,10,0.0,-6.8,4.354308211415448,-14.0,1.0
+Heuristic shaped-reward,1800000,20260525_110306,C:\Users\khanh\Documents\ai\ai_asignment3\runs\Pong-v5_20260525_110306\dqn_step_1800000.pt,20000,10,0.0,7.5,3.774917217635375,2.0,13.0
