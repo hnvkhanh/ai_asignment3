@@ -140,6 +140,21 @@ uses identical episode seeds, and writes CSV results under
 `evaluation_comparison.png` in the same directory. Evaluation results are
 saved after each checkpoint because full Breakout episodes can take time.
 
+## CartPole Epsilon Schedules
+
+Compare epsilon-greedy exploration schedules for a CartPole DQN agent:
+
+```bash
+python -m atari_agent.train_cartpole_epsilon_experiments
+python -m atari_agent.plot_cartpole_epsilon_schedules
+```
+
+The experiment trains three seeds for four schedules: fast decay from `1.0`
+to `0.05`, slow decay from `1.0` to `0.05`, fixed epsilon `0.1`, and fixed
+epsilon `0.2`. Training logs and greedy-evaluation summaries are written under
+`runs_cartpole/`; the comparison figure is exported to
+`visualizations/cartpole_epsilon_schedule_comparison.png`.
+
 ## Evaluate
 
 Run a saved checkpoint:

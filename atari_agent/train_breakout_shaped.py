@@ -146,8 +146,8 @@ class BreakoutRewardShaping(gym.Wrapper):
         ball = self._find_ball(observation)
         paddle = self._find_paddle(observation)
         if ball is None:
-            self.previous_ball = None
-            self.previous_dy = None
+            # The ball can be hidden for a frame while overlapping the paddle.
+            # Keep its incoming trajectory so the following rebound is detected.
             return False
 
         hit = False
@@ -199,9 +199,10 @@ class BreakoutRewardShaping(gym.Wrapper):
         if mask is None:
             return None
 
-        # Ignore score, bricks, and paddle-heavy bottom pixels when searching for the ball.
+        # Include the paddle contact region so a downward/upward reversal is visible.
+        # The size filter below excludes the wider paddle from ball candidates.
         y_min = 90
-        y_max = min(frame.shape[0], 190)
+        y_max = min(frame.shape[0], 205)
         search = mask[y_min:y_max].copy()
         component_count, _, stats, centroids = cv2.connectedComponentsWithStats(
             search.astype(np.uint8),
